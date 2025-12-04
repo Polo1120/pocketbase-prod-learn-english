@@ -1,17 +1,13 @@
-FROM alpine:3.19
+FROM alpine:3.18
 
-# Versión de PocketBase (cámbiala si quieres otra)
-ENV PB_VERSION=0.22.14
+RUN apk add --no-cache libc6-compat
 
-WORKDIR /pb
+WORKDIR /app
 
-# Instala dependencias necesarias
-RUN apk add --no-cache unzip wget ca-certificates && \
-    wget -q https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/pocketbase_${PB_VERSION}_linux_amd64.zip && \
-    unzip pocketbase_${PB_VERSION}_linux_amd64.zip && \
-    chmod +x pocketbase && \
-    rm pocketbase_${PB_VERSION}_linux_amd64.zip
+COPY pocketbase /app/pocketbase
+RUN chmod +x /app/pocketbase
 
-EXPOSE 8090
+EXPOSE 8080
 
-CMD ["./pocketbase", "serve", "--http=0.0.0.0:8090"]
+CMD ["/app/pocketbase", "serve", "--http=0.0.0.0:8080"]
+
